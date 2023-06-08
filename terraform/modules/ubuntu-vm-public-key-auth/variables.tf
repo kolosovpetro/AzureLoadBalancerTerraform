@@ -107,3 +107,8 @@ variable "availability_set_id" {
   type        = string
   description = "ID of the availability set"
 }
+
+variable "public_ip_name" {
+  type        = string
+  description = "Name of the public IP"
+}

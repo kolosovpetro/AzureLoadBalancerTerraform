@@ -47,6 +47,7 @@ module "ubuntu-vm-public-key-auth-one" {
   subnet_id                         = module.network.subnet_id
   nsg_name                          = "${var.nsg_name}-${var.prefix}-1"
   availability_set_id               = azurerm_availability_set.public.id
+  public_ip_name                    = "${var.public_ip_name}-${var.prefix}-1"
 
   depends_on = [
     azurerm_resource_group.public,
@@ -80,6 +81,7 @@ module "ubuntu-vm-public-key-auth-two" {
   subnet_id                         = module.network.subnet_id
   nsg_name                          = "${var.nsg_name}-${var.prefix}-2"
   availability_set_id               = azurerm_availability_set.public.id
+  public_ip_name                    = "${var.public_ip_name}-${var.prefix}-1"
 
   depends_on = [
     azurerm_resource_group.public,
@@ -113,6 +115,7 @@ module "ubuntu-vm-public-key-auth-three" {
   subnet_id                         = module.network.subnet_id
   nsg_name                          = "${var.nsg_name}-${var.prefix}-3"
   availability_set_id               = azurerm_availability_set.public.id
+  public_ip_name                    = "${var.public_ip_name}-${var.prefix}-1"
 
   depends_on = [
     azurerm_resource_group.public,
@@ -126,7 +129,7 @@ module "lb" {
   source                                       = "./modules/load_balancer"
   load_balancer_frontend_ip_configuration_name = "LoadBalancerFrontEnd-${var.prefix}"
   load_balancer_name                           = "LoadBalancer-${var.prefix}"
-  public_ip_name                               = var.public_ip_name
+  public_ip_name                               = "LoadBalancerPublicIP-${var.prefix}"
   resource_group_location                      = azurerm_resource_group.public.location
   resource_group_name                          = azurerm_resource_group.public.name
 }
