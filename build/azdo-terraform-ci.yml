@@ -1,0 +1,45 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - master
+  paths:
+    include:
+      - '*'
+
+variables:
+  - name: TF_LOG
+    value: INFO
+
+stages:
+  - stage: "Terraform_CI"
+    displayName: "Terraform Validate"
+    jobs:
+      - job: Terraform_CI
+        displayName: "Terraform Validate"
+        pool:
+          vmImage: "ubuntu-latest"
+        steps:
+          - checkout: self
+            fetchDepth: 0
+
+          - task: TerraformInstaller@0
+            displayName: 'Terraform Installer'
+            inputs:
+              terraformVersion: 'latest'
+
+          - script: terraform -v
+            displayName: 'Terraform Version'
+            workingDirectory: ./terraform
+
+          - script: terraform init -backend=false
+            displayName: 'Terraform Init'
+            workingDirectory: ./terraform
+
+          - script: terraform validate
+            displayName: 'Terraform Validate'
+            workingDirectory: ./terraform
+
+          - script: terraform fmt -check
+            displayName: 'Terraform Format'
+            workingDirectory: ./terraform
