@@ -81,7 +81,7 @@ module "ubuntu-vm-public-key-auth-two" {
   subnet_id                         = module.network.subnet_id
   nsg_name                          = "${var.nsg_name}-${var.prefix}-2"
   availability_set_id               = azurerm_availability_set.public.id
-  public_ip_name                    = "${var.public_ip_name}-${var.prefix}-1"
+  public_ip_name                    = "${var.public_ip_name}-${var.prefix}-2"
 
   depends_on = [
     azurerm_resource_group.public,
@@ -115,7 +115,7 @@ module "ubuntu-vm-public-key-auth-three" {
   subnet_id                         = module.network.subnet_id
   nsg_name                          = "${var.nsg_name}-${var.prefix}-3"
   availability_set_id               = azurerm_availability_set.public.id
-  public_ip_name                    = "${var.public_ip_name}-${var.prefix}-1"
+  public_ip_name                    = "${var.public_ip_name}-${var.prefix}-3"
 
   depends_on = [
     azurerm_resource_group.public,
