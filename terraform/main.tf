@@ -17,7 +17,7 @@ module "network" {
 module "blue_slot_ubuntu" {
   source                            = "./modules/ubuntu-vm-public-key-auth"
   ip_configuration_name             = "blue-slot-${var.ip_configuration_name}-${var.prefix}"
-  network_interface_name            = "blus-slot-${var.network_interface_name}-${var.prefix}"
+  network_interface_name            = "blue-slot-${var.network_interface_name}-${var.prefix}"
   os_profile_admin_public_key_path  = var.os_profile_admin_public_key_path
   os_profile_admin_username         = var.os_profile_admin_username
   os_profile_computer_name          = "blueslot${var.prefix}"
