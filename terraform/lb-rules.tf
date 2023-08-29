@@ -16,6 +16,7 @@ resource "azurerm_lb_rule" "blue_ssh_rule" {
   backend_port                   = 22
   frontend_ip_configuration_name = module.lb.frontend_ip_configuration_name
   backend_address_pool_ids       = [module.lb.blue_lb_pool_id]
+  probe_id                       = azurerm_lb_probe.blue_ssh_probe.id
 
   depends_on = [
     azurerm_lb_probe.blue_ssh_probe,
@@ -41,6 +42,7 @@ resource "azurerm_lb_rule" "green_ssh_rule" {
   backend_port                   = 22
   frontend_ip_configuration_name = module.lb.frontend_ip_configuration_name
   backend_address_pool_ids       = [module.lb.green_lb_pool_id]
+  probe_id                       = azurerm_lb_probe.green_ssh_probe.id
 
   depends_on = [
     azurerm_lb_probe.green_ssh_probe,
@@ -66,6 +68,7 @@ resource "azurerm_lb_rule" "http_rule" {
   backend_port                   = 80
   frontend_ip_configuration_name = module.lb.frontend_ip_configuration_name
   backend_address_pool_ids       = [module.lb.blue_lb_pool_id]
+  probe_id                       = azurerm_lb_probe.http_probe.id
 
   depends_on = [
     azurerm_lb_probe.http_probe,

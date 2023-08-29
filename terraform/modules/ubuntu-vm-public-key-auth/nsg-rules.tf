@@ -3,7 +3,7 @@ resource "azurerm_network_security_rule" "allow_ssh" {
   priority                    = 1000
   direction                   = "Inbound"
   access                      = "Allow"
-  protocol                    = "Tcp"
+  protocol                    = "*"
   source_port_range           = "*"
   destination_port_range      = "22"
   source_address_prefix       = "*"
