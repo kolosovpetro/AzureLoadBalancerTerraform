@@ -17,3 +17,7 @@ output "frontend_ip_configuration_name" {
 output "id" {
   value = azurerm_lb.public.id
 }
+
+output "lb_public_ip" {
+  value = azurerm_public_ip.public.ip_address
+}

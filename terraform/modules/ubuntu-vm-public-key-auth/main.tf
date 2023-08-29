@@ -26,7 +26,6 @@ resource "azurerm_virtual_machine" "public" {
   location              = var.resource_group_location
   resource_group_name   = var.resource_group_name
   network_interface_ids = [azurerm_network_interface.public.id]
-  availability_set_id   = var.availability_set_id
   vm_size               = var.vm_size
 
   delete_os_disk_on_termination = true

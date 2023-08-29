@@ -14,15 +14,6 @@ module "network" {
   vnet_name               = "${var.vnet_name}-${var.prefix}"
 }
 
-resource "azurerm_availability_set" "public" {
-  name                         = "av-set-${var.prefix}"
-  location                     = azurerm_resource_group.public.location
-  resource_group_name          = azurerm_resource_group.public.name
-  platform_fault_domain_count  = 2
-  platform_update_domain_count = 2
-  managed                      = true
-}
-
 module "blue_slot_ubuntu" {
   source                            = "./modules/ubuntu-vm-public-key-auth"
   ip_configuration_name             = "blue-slot-${var.ip_configuration_name}-${var.prefix}"
@@ -46,10 +37,8 @@ module "blue_slot_ubuntu" {
   vnet_name                         = module.network.vnet_name
   subnet_id                         = module.network.subnet_id
   nsg_name                          = "blue-slot-${var.nsg_name}-${var.prefix}"
-  availability_set_id               = azurerm_availability_set.public.id
 
   depends_on = [
-    azurerm_availability_set.public,
     azurerm_resource_group.public,
     module.network.subnet_name,
     module.network.vnet_name,
@@ -80,10 +69,8 @@ module "green_slot_ubuntu" {
   vnet_name                         = module.network.vnet_name
   subnet_id                         = module.network.subnet_id
   nsg_name                          = "green-slot-${var.nsg_name}-${var.prefix}"
-  availability_set_id               = azurerm_availability_set.public.id
 
   depends_on = [
-    azurerm_availability_set.public,
     azurerm_resource_group.public,
     module.network.subnet_name,
     module.network.vnet_name,
