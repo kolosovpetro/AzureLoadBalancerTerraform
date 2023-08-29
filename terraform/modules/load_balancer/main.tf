@@ -20,27 +20,12 @@ resource "azurerm_lb" "public" {
   ]
 }
 
-resource "azurerm_lb_backend_address_pool" "public" {
+resource "azurerm_lb_backend_address_pool" "blue_pool" {
   loadbalancer_id = azurerm_lb.public.id
-  name            = "HRB-NLB-BACKEND"
+  name            = "blue-pool"
 }
 
-resource "azurerm_lb_probe" "public" {
+resource "azurerm_lb_backend_address_pool" "green_pool" {
   loadbalancer_id = azurerm_lb.public.id
-  name            = "HttpHealthProbe"
-  port            = 80
-}
-
-resource "azurerm_lb_rule" "public" {
-  loadbalancer_id                = azurerm_lb.public.id
-  name                           = "HttpBalancingRule"
-  protocol                       = "Tcp"
-  frontend_port                  = 80
-  backend_port                   = 80
-  frontend_ip_configuration_name = var.load_balancer_frontend_ip_configuration_name
-
-  depends_on = [
-    azurerm_lb_probe.public,
-    azurerm_lb_backend_address_pool.public
-  ]
+  name            = "green-pool"
 }

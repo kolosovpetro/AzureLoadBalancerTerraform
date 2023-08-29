@@ -98,11 +98,6 @@ variable "os_profile_admin_public_key_path" {
   description = "Specifies the public key of the administrator account."
 }
 
-variable "public_ip_name" {
-  type        = string
-  description = "Name of the public IP"
-}
-
 variable "nsg_name" {
   type        = string
   description = "Name of the network security group"
