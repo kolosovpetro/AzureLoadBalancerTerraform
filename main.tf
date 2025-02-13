@@ -44,7 +44,7 @@ locals {
 
 module "backend_machines" {
   for_each                         = local.servers
-  source                           = "github.com/kolosovpetro/AzureLinuxVMTerraform.git//modules/ubuntu-vm-key-auth-custom-image-no-pip?ref=AZ400-167"
+  source                           = "github.com/kolosovpetro/AzureLinuxVMTerraform.git//modules/ubuntu-vm-key-auth-custom-image-no-pip?ref=master"
   custom_image_resource_group_name = "rg-packer-images-linux"
   custom_image_sku                 = "ubuntu2204-v1"
   ip_configuration_name            = "ipc-${each.key}-${var.prefix}"
