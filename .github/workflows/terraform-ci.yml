@@ -15,8 +15,8 @@ on:
 
   workflow_dispatch:
 
-  schedule:
-    - cron: '0 0 * * 0'
+#  schedule:
+#    - cron: '0 0 * * 0'
 
 jobs:
   build-webapp:
@@ -26,40 +26,43 @@ jobs:
       matrix:
         environment:
           - ubuntu-latest
-    
+
     env:
-      DOTNET_NOLOGO: 1
-      DOTNET_CLI_TELEMETRY_OPTOUT: 1
-      ACTIONS_RUNNER_DEBUG: true
+      ACTIONS_RUNNER_DEBUG: false
       TF_LOG: INFO
       ARM_CLIENT_ID: ""
       ARM_CLIENT_SECRET: ${{ secrets.TF_ARM_CLIENT_SECRET }}
       ARM_SUBSCRIPTION_ID: ""
       ARM_TENANT_ID: ""
-    
+
     steps:
       - name: Fetch Sources
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          
+
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
+        uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: latest
-          
+
       - name: Terraform Version
         run: terraform -v
-        working-directory: ./terraform
+
+      - name: Verify encoding
+        shell: pwsh
+        run: ./scripts/verify-encoding.ps1
+
+      - name: Add public key
+        run: echo $PUBLIC_KEY > id_rsa.pub
+        env:
+          PUBLIC_KEY: ${{ secrets.PUBLIC_KEY }}
 
       - name: Terraform Init
         run: terraform init -backend=false
-        working-directory: ./terraform
 
       - name: Terraform Validate
         run: terraform validate
-        working-directory: ./terraform
 
       - name: Terraform Format
         run: terraform fmt -check
-        working-directory: ./terraform
