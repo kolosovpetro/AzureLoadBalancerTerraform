@@ -3,6 +3,14 @@
 Azure Load Balancer (ALB) is a Layer 4 (TCP/UDP) service that distributes network traffic across multiple virtual
 machines (VMs) to ensure availability and reliability.
 
+## What's done
+
+- Blue backend pool: 1 linux vm
+- Green backend pool: 1 linux vm
+- SSH NAT rule: 44 -> blue slot vm 22
+- SSH NAT rule: 45 -> green slot vm 22
+- LB rule: 80 -> blue backend pool 80
+
 ---
 
 ## Main components of ALB
