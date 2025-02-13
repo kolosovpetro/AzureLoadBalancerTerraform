@@ -61,3 +61,11 @@ A company needs SSH access to two VMs behind a load balancer. Two NAT rules are 
 - Public IP:2202 → VM2:22
   Admins can connect using `ssh -p 2201 user@public-ip` to access VM1 and `ssh -p 2202 user@public-ip` for VM2.
 
+## Terraform Modules docs
+
+- https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/lb
+- https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/lb_backend_address_pool
+- https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/lb_rule
+- https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/lb_nat_rule
+
+
