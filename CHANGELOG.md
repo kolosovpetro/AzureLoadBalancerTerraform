@@ -22,3 +22,4 @@ and this project adheres to [Semantic Versioning v2.0.0](https://semver.org/spec
 - Configured HTTP LB rule
 - Configured HTTP LB health probe
 - Configured SSH NAT rules for backend pools
+- Configure CI
