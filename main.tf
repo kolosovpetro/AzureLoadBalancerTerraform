@@ -116,6 +116,35 @@ resource "azurerm_network_interface_backend_address_pool_association" "green_slo
 }
 
 #################################################################################################################
+# LOAD BALANCER HEALTH PROBES
+#################################################################################################################
+
+resource "azurerm_lb_probe" "blue_http_probe" {
+  loadbalancer_id = azurerm_lb.public.id
+  name            = "blue-http-probe"
+  port            = local.servers.blue.http_frontend_port
+}
+
+#################################################################################################################
+# LOAD BALANCER RULES
+#################################################################################################################
+
+resource "azurerm_lb_rule" "http_lb_rules" {
+  loadbalancer_id                = azurerm_lb.public.id
+  name                           = "blue-http-rule"
+  protocol                       = "Tcp"
+  frontend_port                  = local.servers.blue.http_frontend_port
+  backend_port                   = 80
+  frontend_ip_configuration_name = azurerm_lb.public.frontend_ip_configuration[0].name
+  probe_id                       = azurerm_lb_probe.blue_http_probe.id
+  backend_address_pool_ids       = [azurerm_lb_backend_address_pool.backend_pools["blue"].id]
+
+  depends_on = [
+    azurerm_lb_probe.blue_http_probe
+  ]
+}
+
+#################################################################################################################
 # SSH NAT RULES
 #################################################################################################################
 
@@ -143,31 +172,27 @@ resource "azurerm_network_interface_nat_rule_association" "ssh_nat_rule_associat
 }
 
 #################################################################################################################
-# LOAD BALANCER HEALTH PROBES
+# HTTP NAT RULES
 #################################################################################################################
 
-resource "azurerm_lb_probe" "lb_http_probes" {
-  for_each        = local.servers
-  loadbalancer_id = azurerm_lb.public.id
-  name            = "${each.key}-http-probe"
-  port            = each.value.http_frontend_port
-}
-
-#################################################################################################################
-# LOAD BALANCER RULES
-#################################################################################################################
-
-resource "azurerm_lb_rule" "http_lb_rules" {
-  for_each                       = local.servers
+resource "azurerm_lb_nat_rule" "green_http_nat_rule" {
+  resource_group_name            = azurerm_resource_group.public.name
   loadbalancer_id                = azurerm_lb.public.id
-  name                           = "${each.key}-http-rule"
+  name                           = "green-http-nat"
   protocol                       = "Tcp"
-  frontend_port                  = each.value.http_frontend_port
+  frontend_port                  = local.servers.green.http_frontend_port
   backend_port                   = 80
   frontend_ip_configuration_name = azurerm_lb.public.frontend_ip_configuration[0].name
-  probe_id                       = azurerm_lb_probe.lb_http_probes[each.key].id
-  backend_address_pool_ids       = [azurerm_lb_backend_address_pool.backend_pools[each.key].id]
+}
 
-  depends_on = [azurerm_lb_probe.lb_http_probes]
+resource "azurerm_network_interface_nat_rule_association" "green_http_nat_rule_association" {
+  network_interface_id  = module.backend_machines["green"].network_interface_id
+  ip_configuration_name = module.backend_machines["green"].ip_configuration_name
+  nat_rule_id           = azurerm_lb_nat_rule.green_http_nat_rule.id
+
+  depends_on = [
+    module.backend_machines,
+    azurerm_lb_nat_rule.green_http_nat_rule
+  ]
 }
 
