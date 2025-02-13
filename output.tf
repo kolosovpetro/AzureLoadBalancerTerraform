@@ -1,7 +1,7 @@
 output "ssh_command_blue" {
-  value = "ssh razumovsky_r@${azurerm_public_ip.lb_public_ip.ip_address}:44"
+  value = "ssh -p ${local.servers.blue.ssh_frontend_port} razumovsky_r@${azurerm_public_ip.lb_public_ip.ip_address}"
 }
 
 output "ssh_command_green" {
-  value = "ssh razumovsky_r@${azurerm_public_ip.lb_public_ip.ip_address}:45"
+  value = "ssh -p ${local.servers.green.ssh_frontend_port} razumovsky_r@${azurerm_public_ip.lb_public_ip.ip_address}"
 }
