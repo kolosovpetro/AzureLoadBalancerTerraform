@@ -32,11 +32,11 @@ resource "azurerm_subnet" "internal" {
 locals {
   servers = {
     blue = {
-      ssh_frontend_port = 44
+      ssh_frontend_port  = 44
       http_frontend_port = 80
     }
     green = {
-      ssh_frontend_port = 45
+      ssh_frontend_port  = 45
       http_frontend_port = 81
     }
   }
@@ -44,7 +44,7 @@ locals {
 
 module "backend_machines" {
   for_each                         = local.servers
-  source                           = "github.com/kolosovpetro/AzureLinuxVMTerraform.git//modules/ubuntu-vm-key-auth-custom-image?ref=master"
+  source                           = "github.com/kolosovpetro/AzureLinuxVMTerraform.git//modules/ubuntu-vm-key-auth-custom-image-no-pip?ref=AZ400-167"
   custom_image_resource_group_name = "rg-packer-images-linux"
   custom_image_sku                 = "ubuntu2204-v1"
   ip_configuration_name            = "ipc-${each.key}-${var.prefix}"
@@ -52,7 +52,6 @@ module "backend_machines" {
   os_profile_admin_public_key      = file("${path.root}/id_rsa.pub")
   os_profile_admin_username        = "razumovsky_r"
   os_profile_computer_name         = "vm-${each.key}-${var.prefix}"
-  public_ip_name                   = "pip-${each.key}-${var.prefix}"
   resource_group_location          = azurerm_resource_group.public.location
   resource_group_name              = azurerm_resource_group.public.name
   storage_os_disk_name             = "osdisk-${each.key}-${var.prefix}"
@@ -167,7 +166,7 @@ resource "azurerm_lb_rule" "http_lb_rules" {
   backend_port                   = 80
   frontend_ip_configuration_name = azurerm_lb.public.frontend_ip_configuration[0].name
   probe_id                       = azurerm_lb_probe.lb_http_probes[each.key].id
-  backend_address_pool_ids = [azurerm_lb_backend_address_pool.backend_pools[each.key].id]
+  backend_address_pool_ids       = [azurerm_lb_backend_address_pool.backend_pools[each.key].id]
 
   depends_on = [azurerm_lb_probe.lb_http_probes]
 }
