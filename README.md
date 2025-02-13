@@ -9,6 +9,7 @@ machines (VMs) to ensure availability and reliability.
 - Green backend pool: 1 linux vm
 - SSH NAT rule: 44 -> blue slot vm 22
 - SSH NAT rule: 45 -> green slot vm 22
+- HTTP NAT rule: 81 -> green slot vm 80
 - LB rule: 80 -> blue backend pool 80
 
 ---
