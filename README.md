@@ -3,6 +3,13 @@
 Azure Load Balancer (ALB) is a Layer 4 (TCP/UDP) service that distributes network traffic across multiple virtual
 machines (VMs) to ensure availability and reliability.
 
+## Infrastructure provision
+
+- terraform plan
+- terraform apply
+- Deploy-Blue-Page.ps1
+- Deploy-Green-Page.ps1
+
 ## What's done
 
 - Blue backend pool: 1 linux vm
