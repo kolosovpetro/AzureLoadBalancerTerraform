@@ -30,10 +30,10 @@ output "copy_command_green" {
   value = "ssh -p ${local.servers.green.ssh_frontend_port} razumovsky_r@${azurerm_public_ip.lb_public_ip[local.servers.green.indexer].ip_address} \"sudo cp /tmp/green.html /var/www/html/index.nginx-debian.html && sudo systemctl restart nginx\""
 }
 
-output "blue_green_url" {
+output "url_green_slot" {
   value = "http://${azurerm_public_ip.lb_public_ip[local.servers.green.indexer].ip_address}"
 }
 
-output "blue_blue_url" {
+output "url_blue_slot" {
   value = "http://${azurerm_public_ip.lb_public_ip[local.servers.blue.indexer].ip_address}"
 }
