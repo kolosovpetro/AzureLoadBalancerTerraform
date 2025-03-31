@@ -168,6 +168,10 @@ resource "azurerm_lb_rule" "http_lb_rules" {
   backend_address_pool_ids       = [azurerm_lb_backend_address_pool.backend_pools[each.key].id]
   disable_outbound_snat          = true
 
+  lifecycle {
+    ignore_changes = [backend_address_pool_ids]
+  }
+
   depends_on = [
     azurerm_lb_probe.http_lb_probes
   ]
