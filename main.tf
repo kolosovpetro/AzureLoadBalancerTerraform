@@ -26,7 +26,7 @@ resource "azurerm_subnet" "internal" {
 }
 
 #################################################################################################################
-# VIRTUAL MACHINES CUSTOM IMAGE (PUBLIC KEY AUTH)
+# VARIABLES
 #################################################################################################################
 
 locals {
@@ -34,7 +34,7 @@ locals {
     blue = {
       indexer                        = "blue"
       index_value                    = 0
-      ssh_frontend_port              = 22
+      ssh_frontend_port              = 44
       http_frontend_port             = 80
       public_ip_name                 = "pip-blue-${var.prefix}"
       frontend_ip_configuration_name = "fipc-blue-${var.prefix}"
@@ -45,8 +45,8 @@ locals {
     }
     green = {
       indexer                        = "green"
-      index_value                    = 0
-      ssh_frontend_port              = 22
+      index_value                    = 1
+      ssh_frontend_port              = 45
       http_frontend_port             = 80
       public_ip_name                 = "pip-green-${var.prefix}"
       frontend_ip_configuration_name = "fipc-green-${var.prefix}"
@@ -57,6 +57,10 @@ locals {
     }
   }
 }
+
+#################################################################################################################
+# VIRTUAL MACHINES CUSTOM IMAGE (PUBLIC KEY AUTH)
+#################################################################################################################
 
 module "backend_machines" {
   for_each                         = local.servers
@@ -101,12 +105,12 @@ resource "azurerm_lb" "public" {
 
   frontend_ip_configuration {
     name                 = local.servers.blue.frontend_ip_configuration_name
-    public_ip_address_id = azurerm_public_ip.lb_public_ip["blue"].id
+    public_ip_address_id = azurerm_public_ip.lb_public_ip[local.servers.blue.indexer].id
   }
 
   frontend_ip_configuration {
     name                 = local.servers.green.frontend_ip_configuration_name
-    public_ip_address_id = azurerm_public_ip.lb_public_ip["green"].id
+    public_ip_address_id = azurerm_public_ip.lb_public_ip[local.servers.green.indexer].id
   }
 }
 
@@ -162,6 +166,7 @@ resource "azurerm_lb_rule" "http_lb_rules" {
   frontend_ip_configuration_name = each.value.frontend_ip_configuration_name
   probe_id                       = azurerm_lb_probe.http_lb_probes[each.key].id
   backend_address_pool_ids       = [azurerm_lb_backend_address_pool.backend_pools[each.key].id]
+  disable_outbound_snat          = true
 
   depends_on = [
     azurerm_lb_probe.http_lb_probes
@@ -196,6 +201,31 @@ resource "azurerm_network_interface_nat_rule_association" "ssh_nat_rule_associat
   depends_on = [
     module.backend_machines,
     azurerm_lb_nat_rule.ssh_nat_rules
+  ]
+}
+
+#################################################################################################################
+# LOAD BALANCER OUTBOUND RULES
+#################################################################################################################
+
+resource "azurerm_lb_outbound_rule" "outbound_rule" {
+  for_each                = local.servers
+  name                    = "lb-outbound-rule-${each.key}-${var.prefix}"
+  loadbalancer_id         = azurerm_lb.public.id
+  protocol                = "All"
+  backend_address_pool_id = azurerm_lb_backend_address_pool.backend_pools[each.key].id
+  enable_tcp_reset        = true
+
+  allocated_outbound_ports = 1024
+  idle_timeout_in_minutes  = 4
+
+  frontend_ip_configuration {
+    name = each.value.frontend_ip_configuration_name
+  }
+
+  depends_on = [
+    azurerm_lb_backend_address_pool.backend_pools,
+    azurerm_lb_rule.http_lb_rules
   ]
 }
 

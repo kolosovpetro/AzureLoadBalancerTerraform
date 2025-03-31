@@ -1,10 +1,10 @@
 param(
-    [String] $prefix
+    [String] $prefix = "d01"
 )
 
-Write-Host "Swapping to blue"
+Write-Host "Swapping blue rule to point to blue"
 
 az network lb rule update --lb-name "lb-$prefix" `
-    --name "http-rule" `
+    --name "http-rule-blue-$prefix" `
     --resource-group "rg-loadbalancer-$prefix" `
-    --backend-pool-name "blue-pool"
+    --backend-pool-name "backend-pool-blue-$prefix"

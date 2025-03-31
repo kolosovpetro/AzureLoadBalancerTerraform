@@ -1,21 +1,23 @@
-# list all rules
-az network lb rule list --lb-name "lb-lb03" `
-    --resource-group "rg-loadbalancer-lb03"
+# Set prefix
+$prefix = "d01"
 
-# delete green rule
-az network lb rule delete --lb-name "lb-lb03" `
-    --name "http-rule-green" `
-    --resource-group "rg-loadbalancer-lb03"
+# List all rules
+az network lb rule list --lb-name "lb-$prefix" `
+    --resource-group "rg-loadbalancer-$prefix"
 
+# Delete green rule
+az network lb rule delete --lb-name "lb-$prefix" `
+    --name "http-rule-green-$prefix" `
+    --resource-group "rg-loadbalancer-$prefix"
 
-# update rule to point to green pool
-az network lb rule update --lb-name "lb-lb03" `
-    --name "http-rule-blue" `
-    --resource-group "rg-loadbalancer-lb03" `
+# Update rule to point to green pool
+az network lb rule update --lb-name "lb-$prefix" `
+    --name "http-rule-blue-$prefix" `
+    --resource-group "rg-loadbalancer-$prefix" `
     --backend-pool-name "green-pool"
 
-# update rule to point to blue pool
-az network lb rule update --lb-name "lb-lb03" `
-    --name "http-rule-blue" `
-    --resource-group "rg-loadbalancer-lb03" `
+# Update rule to point to blue pool
+az network lb rule update --lb-name "lb-$prefix" `
+    --name "http-rule-blue-$prefix" `
+    --resource-group "rg-loadbalancer-$prefix" `
     --backend-pool-name "blue-pool"
