@@ -24,3 +24,5 @@ and this project adheres to [Semantic Versioning v2.0.0](https://semver.org/spec
 - Configured SSH NAT rules for backend pools
 - Configure CI
 - PowerShell test page deployment scripts
+- Add front end ip configurations
+- Upgrade terraform provider version
