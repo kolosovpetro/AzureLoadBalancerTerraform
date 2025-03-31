@@ -1,23 +1,50 @@
-# Set prefix
 $prefix = "d01"
+$blueBackendPoolName = "backend-pool-blue-$prefix"
+$greenBackendPoolName = "backend-pool-green-$prefix"
+$blueRuleName = "lb-rule-blue-$prefix"
+$rgName = "rg-load-balancer-$prefix"
 
-# List all rules
-az network lb rule list --lb-name "lb-$prefix" `
-    --resource-group "rg-loadbalancer-$prefix"
+$loadBalancerRules = $( az network lb rule list --lb-name "lb-$prefix" `
+    --resource-group "rg-load-balancer-$prefix" ) | ConvertFrom-Json
 
-# Delete green rule
-az network lb rule delete --lb-name "lb-$prefix" `
-    --name "http-rule-green-$prefix" `
-    --resource-group "rg-loadbalancer-$prefix"
+$blueRuleObject = $loadBalancerRules | Where-Object { $_.name -eq $blueRuleName }
 
-# Update rule to point to green pool
-az network lb rule update --lb-name "lb-$prefix" `
-    --name "http-rule-blue-$prefix" `
-    --resource-group "rg-loadbalancer-$prefix" `
-    --backend-pool-name "green-pool"
+if (!($blueRuleObject))
+{
+    Write-Host "Blue rule object not found, skipping..." -BackgroundColor Red
+    exit 1
+}
 
-# Update rule to point to blue pool
-az network lb rule update --lb-name "lb-$prefix" `
-    --name "http-rule-blue-$prefix" `
-    --resource-group "rg-loadbalancer-$prefix" `
-    --backend-pool-name "blue-pool"
+Write-Host "Object found $( $blueRuleObject.name )"
+
+$currentBackendPool = $blueRuleObject.backendAddressPool.id
+
+Write-Host "Current backend pool: $currentBackendPool"
+
+if ($currentBackendPool -match $blueBackendPoolName)
+{
+    Write-Host "Blue rule targets $blueBackendPoolName"
+
+    Write-Host "Swapping blue rule to point to green"
+
+    az network lb rule update --lb-name "lb-$prefix" `
+    --name $blueRuleName `
+    --resource-group $rgName `
+    --backend-pool-name $greenBackendPoolName
+
+    exit 0
+}
+
+if ($currentBackendPool -match $greenBackendPoolName)
+{
+    Write-Host "Blue rule targets $greenBackendPoolName"
+
+    Write-Host "Swapping blue rule to point to blue"
+
+    az network lb rule update --lb-name "lb-$prefix" `
+    --name $blueRuleName `
+    --resource-group $rgName `
+    --backend-pool-name $blueBackendPoolName
+
+    exit 0
+}
