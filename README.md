@@ -7,8 +7,10 @@ machines (VMs) to ensure availability and reliability.
 
 - terraform plan
 - terraform apply
-- Deploy-Blue-Page.ps1
-- Deploy-Green-Page.ps1
+- .\Deploy-Blue-Page.ps1
+- .\Deploy-Green-Page.ps1
+- .\cloudflare\Main.ps1 -ApiToken $env:CLOUDFLARE_API_KEY -ZoneName "razumovsky.me"
+- .\Swap-Slots.ps1
 
 ## What's done
 
@@ -16,8 +18,12 @@ machines (VMs) to ensure availability and reliability.
 - Green backend pool: 1 linux vm
 - SSH NAT rule: 44 -> blue slot vm 22
 - SSH NAT rule: 45 -> green slot vm 22
-- HTTP NAT rule: 81 -> green slot vm 80
 - LB rule: 80 -> blue backend pool 80
+
+## DNS
+
+- http://blue-slot.razumovsky.me/
+- http://green-slot.razumovsky.me/
 
 ---
 
