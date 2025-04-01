@@ -7,8 +7,10 @@ machines (VMs) to ensure availability and reliability.
 
 - terraform plan
 - terraform apply
-- Deploy-Blue-Page.ps1
-- Deploy-Green-Page.ps1
+- .\Deploy-Blue-Page.ps1
+- .\Deploy-Green-Page.ps1
+- .\cloudflare\Main.ps1 -ApiToken $env:CLOUDFLARE_API_KEY -ZoneName "razumovsky.me"
+- .\Swap-Slots.ps1
 
 ## What's done
 
